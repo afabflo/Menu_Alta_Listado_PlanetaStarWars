@@ -33,3 +33,19 @@ He profundizado en **Navigation Compose** para crear una experiencia de usuario 
 
 ---
 *Este proyecto representa mi camino en el aprendizaje de Jetpack Compose y las arquitecturas modernas en Android.* Ejecutar en un emulador o dispositivo físico con API 24 o superior.
+
+# Changelog - Tarea 3
+
+## [Versión 2.0.0] - Cambios respecto a la Tarea 2
+
+### Añadido
+- **Arquitectura MVVM:** Separación total de la lógica en ViewModels.
+- **Inyección de Dependencias:** Implementación de Dagger Hilt en toda la app.
+- **Pantalla de Edición:** Nueva funcionalidad para modificar datos de planetas existentes.
+- **Animaciones:** Transiciones visuales (Fade, Slide, Scale) entre todas las pantallas.
+- **Feedback:** SnackBar informativo tras añadir, editar o borrar planetas.
+
+### Mejorado
+- **Navegación:** Uso de Navigation Compose con rutas centralizadas.
+- **Borrado Seguro:** Diálogo de confirmación antes de eliminar un planeta.
+- **Estilo:** Mejora en el diseño de la pantalla "About Us".
