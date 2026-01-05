@@ -1,33 +1,35 @@
 # Tarea 3 - Gestión de Planetas Star Wars (Jetpack Compose)
 
-## Descripción
-Esta aplicación permite la gestión completa (Listado, Alta, Edición y Borrado) de planetas del universo Star Wars. Se ha desarrollado siguiendo los principios modernos de desarrollo en Android propuestos por Google, centrados en la separación de capas y la reactividad.
+# 🪐 Star Wars Planet Manager - Evolución hacia MVVM
 
-## Arquitectura
-Se ha implementado el patrón **MVVM (Model-View-ViewModel)** para garantizar un código limpio, mantenible y testeable:
+## 📝 Sobre este Proyecto
+Este proyecto nació como una simple lista de planetas y ha evolucionado hasta convertirse en una aplicación Android robusta que implementa la arquitectura recomendada por Google. A través de esta práctica, he transformado una estructura básica en un sistema profesional y escalable.
 
-* **Model:** Representado por la entidad `Planet` y un repositorio estático que gestiona la fuente de verdad de los datos.
-* **View:** Pantallas desarrolladas íntegramente con **Jetpack Compose**, utilizando componentes de Material 3.
-* **ViewModel:** Cada pantalla cuenta con su propio ViewModel para gestionar el estado de la UI y la lógica de negocio.
+## 🚀 Lo que he aprendido y aplicado
+Este proyecto ha sido un reto de aprendizaje donde he pasado de "hacer que funcione" a "hacerlo con arquitectura profesional".
 
-## Tecnologías y Conceptos Implementados
+### 🏛️ Arquitectura MVVM (Model-View-ViewModel)
+He aprendido a separar la lógica de negocio de la interfaz de usuario. Ahora, las pantallas (Views) solo se encargan de mostrar datos, mientras que los ViewModels gestionan el estado, haciendo que el código sea mucho más limpio y fácil de mantener.
 
-### 1. Inyección de Dependencias (Dagger Hilt)
-Se utiliza **Hilt** para desacoplar las dependencias del proyecto. El repositorio de datos se inyecta en los ViewModels, facilitando la escalabilidad y cumpliendo con el **Punto 9** del enunciado.
+### 💉 Inyección de Dependencias con Hilt
+Uno de los mayores aprendizajes ha sido la implementación de **Dagger Hilt**. He pasado de crear objetos manualmente a dejar que el sistema los inyecte. Esto me ha permitido desacoplar el Repositorio de los ViewModels, facilitando la escalabilidad del proyecto.
 
-### 2. Gestión de Estados (StateFlow)
-El listado de planetas y los estados de edición se gestionan mediante **StateFlow**. Esto permite que la interfaz de usuario sea reactiva y se actualice automáticamente ante cualquier cambio en el repositorio de datos.
+### 🔄 Estados Reactivos con StateFlow
+He dejado atrás las actualizaciones manuales para usar **StateFlow**. Aprender a manejar flujos de datos reactivos ha sido clave: ahora la UI "reacciona" automáticamente cuando los datos en el repositorio cambian, garantizando que el usuario siempre vea la información actualizada.
 
-### 3. Navegación y Animaciones
-Se utiliza **Navigation Compose** para la gestión de rutas. Siguiendo el **Punto 7**, se han implementado animaciones de transición personalizadas mediante `AnimatedVisibility` (Fade, Scale y Slide) para mejorar la experiencia de usuario (UX).
+### 🎭 UX y Animaciones en Compose
+He profundizado en **Navigation Compose** para crear una experiencia de usuario fluida. Implementar transiciones mediante `AnimatedVisibility` (fades, slides y scales) me ha enseñado cómo los pequeños detalles visuales transforman una app sencilla en una experiencia mucho más profesional.
 
-### 4. Componentes Avanzados de UI
-* **Scaffold:** Estructura base con `TopAppBar`, `FloatingActionButton` y `SnackbarHost`.
-* **SnackBars:** Notificaciones informativas sincronizadas con el `Scaffold` tras acciones de borrado o edición (**Punto 10**).
-* **CompositionLocal:** Uso de `LocalPlanetPadding` para la gestión global de márgenes y espaciados (**Punto 12**).
-* **Previews:** Implementación de `@Preview` avanzados para todas las pantallas del proyecto.
+### 🛠️ UI Avanzada con Material 3
+* **Scaffold & Snackbars:** He aprendido a coordinar estados de UI globales, como mostrar avisos (Snackbars) sincronizados con acciones del usuario (borrado/edición).
+* **CompositionLocal:** He implementado proveedores de diseño globales para mantener la coherencia en los espaciados de toda la app.
 
-## Instrucciones de Ejecución
-1. Clonar el repositorio.
-2. Sincronizar el proyecto con Gradle.
-3. Ejecutar en un emulador o dispositivo físico con API 24 o superior.
+## 🛠️ Stack Tecnológico
+* **Lenguaje:** Kotlin
+* **UI:** Jetpack Compose (Material 3)
+* **Arquitectura:** MVVM + Clean Architecture principles
+* **DI:** Hilt
+* **Navegación:** Compose Navigation con Animaciones
+
+---
+*Este proyecto representa mi camino en el aprendizaje de Jetpack Compose y las arquitecturas modernas en Android.* Ejecutar en un emulador o dispositivo físico con API 24 o superior.
