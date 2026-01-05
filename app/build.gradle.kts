@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.kapt)
+    alias(libs.plugins.kotlin.parcelize)
 }
 
 android {
@@ -49,6 +52,10 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.compose.animation) // Ahora sí lo encontrará
+    kapt(libs.hilt.android.compiler) // Ahora sí lo encontrará
+    implementation(libs.androidx.hilt.navigation.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
