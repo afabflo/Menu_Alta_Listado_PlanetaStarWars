@@ -15,6 +15,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,15 +26,31 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.menu_alta_listadoplanetstarwars.R
+import com.example.menu_alta_listadoplanetstarwars.data.model.BaseTopAppBarState
+import com.example.menu_alta_listadoplanetstarwars.home.Routes
 import com.example.menu_alta_listadoplanetstarwars.ui.components.CampoTextoPlaneta
 import com.example.menu_alta_listadoplanetstarwars.ui.theme.colorWars
 import com.example.menu_alta_listadoplanetstarwars.viewModel.AñadirViewModel
 
 @Composable
 fun  AñadirPlaneta(modifier: Modifier,
-       viewModel: AñadirViewModel,onBack:() -> Unit)
+       navHostController: NavHostController,
+                   onUpdateTopBar: (BaseTopAppBarState) -> Unit,
+                   viewModel: AñadirViewModel,onBack:() -> Unit)
 {
+    val backIcon = painterResource(id = R.drawable.ic_launcher)
+    LaunchedEffect(Unit) {
+        onUpdateTopBar(
+            BaseTopAppBarState(
+                title = "Nuevo planeta",
+                iconUpAction = backIcon,
+                upAction = {onBack()},
+                actions = emptyList()
+            )
+        )
+    }
     val scrollState = rememberScrollState()
     Column(
         modifier = modifier
@@ -55,6 +72,8 @@ fun  AñadirPlaneta(modifier: Modifier,
         CampoTextoPlaneta(viewModel.population, { viewModel.population = it }, "Poblacion")
         Button(onClick = {
             viewModel.insertarPlaneta { onBack() }
+            navHostController.navigate(Routes.LIST)
+
         },
             modifier= Modifier.fillMaxWidth().padding(top=8.dp),
             colors = ButtonDefaults.buttonColors(containerColor = colorWars)
@@ -66,27 +85,39 @@ fun  AñadirPlaneta(modifier: Modifier,
 
 @Composable
 fun HeaderBox() {
-   Box(
-       modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
-   ){
-       Image(
-           painter = painterResource(R.drawable.planetaswars),
-           modifier = Modifier.fillMaxWidth().height(180.dp),
-           contentDescription = stringResource(R.string.planetaFoto),
-           contentScale = ContentScale.Crop
-       )
-       Box(
-           modifier = Modifier.background(Color(0xAA000000)).matchParentSize()
-       )
-       Text(
-           text = stringResource(R.string.starwarsTitleFoto),
-           fontSize = 12.sp,
-           color = colorWars,
-           fontWeight = FontWeight.Bold,
-           modifier = Modifier.align(Alignment.BottomCenter)
-       )
+    Box(
+        modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
+    ){
+        Image(
+            painter = painterResource(R.drawable.planetaswars),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(180.dp),
+            // 1: Descripción  especifica
 
-   }
+            contentDescription = "Mapa de galaxia de Star Wars con planetas Ejemplos(Hoth, Tatooine y Naboo)",
+            contentScale = ContentScale.Crop
+        )
+
+        //2: Fondo totalmente negro detrás del texto.
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .background(Color.Black)
+                .padding(vertical = 4.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.starwarsTitleFoto),
+                //3  tamaño font 22sp
+                fontSize = 22.sp,
+                color = colorWars,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
+    }
 }
 
 

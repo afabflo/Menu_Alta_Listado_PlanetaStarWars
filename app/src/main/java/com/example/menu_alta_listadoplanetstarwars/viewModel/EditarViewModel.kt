@@ -4,13 +4,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.menu_alta_listadoplanetstarwars.data.repository.PlanetRepositorio
+import com.example.menu_alta_listadoplanetstarwars.model.Planet
 import com.example.menu_alta_listadoplanetstarwars.network.BaseResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class EditarViewModel @Inject constructor(private val repositorio: PlanetRepositorio) : ViewModel() {
+class EditarViewModel @Inject constructor(
+    private val repository: PlanetRepositorio
+) : ViewModel() {
+
+    // Variables de estado
     var name by mutableStateOf("")
     var rotationPeriod by mutableStateOf("")
     var orbitalPeriod by mutableStateOf("")
@@ -20,23 +27,35 @@ class EditarViewModel @Inject constructor(private val repositorio: PlanetReposit
     var terrain by mutableStateOf("")
     var surfaceWater by mutableStateOf("")
     var population by mutableStateOf("")
-    init{
-        repositorio.planetaSeleccionado?.let { planet ->
-            name = planet.name
-            rotationPeriod = planet.rotation_period
-            orbitalPeriod = planet.orbital_period
-            diameter = planet.diameter
-            climate = planet.climate
-            gravity = planet.gravity
-            terrain = planet.terrain
-            surfaceWater = planet.surface_water
-            population = planet.population
-        }
 
+    // Variables internas para mantener datos que no se editan
+    private var currentId: Int = 0
+    private var currentResidents: List<String> = emptyList()
+    private var currentFilms: List<String> = emptyList()
+
+    init {
+        val planeta = repository.planetaSeleccionado
+        if (planeta != null) {
+            currentId = planeta.id
+            name = planeta.name
+            rotationPeriod = planeta.rotation_period
+            orbitalPeriod = planeta.orbital_period
+            diameter = planeta.diameter
+            climate = planeta.climate
+            gravity = planeta.gravity
+            terrain = planeta.terrain
+            surfaceWater = planeta.surface_water
+            population = planeta.population
+            currentResidents = planeta.residents
+            currentFilms = planeta.films
+        }
     }
-    fun actualizarPlaneta(onSucces:() -> Unit) {
-        repositorio.planetaSeleccionado?.let { original ->
-            val planetaEditado = original.copy(
+    fun actualizarPlaneta(onSuccess: () -> Unit) {
+        viewModelScope.launch {
+            // ... (creación del objeto planetaActualizado) ...
+
+            val planetaActualizado = Planet(
+                id = currentId, // ¡Muy importante! Usar el mismo ID para que sea UPDATE
                 name = name,
                 rotation_period = rotationPeriod,
                 orbital_period = orbitalPeriod,
@@ -45,12 +64,19 @@ class EditarViewModel @Inject constructor(private val repositorio: PlanetReposit
                 gravity = gravity,
                 terrain = terrain,
                 surface_water = surfaceWater,
-                population = population
+                population = population,
+                residents = currentResidents, // Mantenemos los originales
+                films = currentFilms          // Mantenemos los originales
             )
-            val resultado = repositorio.update(planetaEditado)
-            if (resultado is BaseResult.Sucess) {
-                onSucces()
+            val result = repository.update(planetaActualizado)
+
+            if (result is BaseResult.Sucess) {
+                onSuccess()
+            } else {
+                println("ERROR AL ACTUALIZAR: El repositorio devolvió Error. ID: $currentId")
             }
         }
     }
+
+
 }

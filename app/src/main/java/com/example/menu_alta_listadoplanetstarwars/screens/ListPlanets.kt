@@ -1,15 +1,19 @@
 package com.example.menu_alta_listadoplanetstarwars.screens
 
-import Planet
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.R
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -19,6 +23,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,98 +32,124 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.composables.deathstaricon
+import com.composables.deathstaricon // TU ICONO
+import com.example.menu_alta_listadoplanetstarwars.data.model.Action
+import com.example.menu_alta_listadoplanetstarwars.data.model.BaseTopAppBarState
 import com.example.menu_alta_listadoplanetstarwars.home.Routes
-import com.example.menu_alta_listadoplanetstarwars.ui.locals.LocalPlanetPadding
+import com.example.menu_alta_listadoplanetstarwars.model.Planet
 import com.example.menu_alta_listadoplanetstarwars.ui.theme.colorWars
 import com.example.menu_alta_listadoplanetstarwars.viewModel.ListadoViewModel
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ListPlanets(
-modifier: Modifier = Modifier,
-viewModel: ListadoViewModel,
-navController: NavController,
-snackbarHostState : SnackbarHostState
+    modifier: Modifier = Modifier,
+    viewModel: ListadoViewModel,
+    navController: NavController,
+    snackbarHostState: SnackbarHostState,
+    onUpdateTopBar: (BaseTopAppBarState) -> Unit
 ) {
     val planetas by viewModel.planetas.collectAsState(initial = emptyList())
     var showDialog by remember { mutableStateOf(false) }
     var planetToDelete by remember { mutableStateOf<Planet?>(null) }
     val scope = rememberCoroutineScope()
-    LazyColumn(
-        modifier = modifier.fillMaxSize()){
-        items(planetas){
-            item ->
-            Card (
-                modifier = Modifier.fillMaxWidth().padding(vertical = 5.dp, horizontal = 12.dp).combinedClickable(onClick = {
-                    viewModel.selecionarPlaneta(item)
-                    navController.navigate(Routes.EDIT)
+    val menuIcon = painterResource(id = com.example.menu_alta_listadoplanetstarwars.R.drawable.ic_launcher)
+    LaunchedEffect(Unit) {
+        onUpdateTopBar(
+            BaseTopAppBarState(
+                title = "Planeta Star Wars",
+                iconUpAction = menuIcon,
+                actions = listOf(
+                    Action.ActionImageVector(
+                        name = "Añadir",
+                        icon = Icons.Default.Add,
+                        contentDescription = "Añadir Planeta",
+                        onClick = {navController.navigate(Routes.ADD)},
+                        isVisible = true
+                    ),
+                    Action.ActionImageVector(
+                        name = "Sobre nosotros",
+                        icon = Icons.Default.Info,
+                        contentDescription = "Informacion",
+                        onClick = {navController.navigate(Routes.ABOUT)},
+                        isVisible = false
+                    )
+                )
+            )
+        )
+    }
 
-                },
-                    onLongClick = {
-                        planetToDelete = item
-                        showDialog = true
-                    }
-                ),
+    LazyColumn(
+        modifier = modifier.fillMaxSize()
+    ) {
+        items(planetas) { item ->
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 5.dp, horizontal = 12.dp)
+                    .combinedClickable(
+                        onClick = {
+                            viewModel.selecionarPlaneta(item)
+                            navController.navigate(Routes.EDIT)
+                        },
+                        onLongClick = {
+                            planetToDelete = item
+                            showDialog = true
+                        }
+                    ),
                 shape = CardDefaults.shape,
                 colors = CardDefaults.cardColors(containerColor = Color.Black),
-            ){
-                Column(
-                    modifier = Modifier.padding(LocalPlanetPadding.current),
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                androidx.compose.foundation.layout.Row(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
                 ) {
                     Icon(
                         imageVector = deathstaricon,
-                        contentDescription = "Estrella de la muerte",
+                        contentDescription = "Estrella de la muerte${item.name}",
                         tint = Color.White,
                         modifier = Modifier.size(40.dp)
                     )
-                    Text(text = "${item.name}", style = TextStyle(color = colorWars))
-                    Text(text = "Clima: ${item.climate}", style = TextStyle(color = Color.White))
-                    Text(text = "Populaton: ${item.population}", style = TextStyle(color = Color.White))
-                    Text(text = "Terrain: ${item.terrain}", style = TextStyle(color = Color.White))
-                    Text(text = "Residentes:${item.residents.joinToString(", ")}", style = TextStyle(color = Color.White))
-                    Text(text = "Films: ${item.films}", style = TextStyle(color = Color.White))
-                    Text(text = "ID: ${item.id}", style = TextStyle(color = colorWars))
+
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(text = item.name, style = TextStyle(color = colorWars, fontSize = 20.sp))
+                        Text(text = "Clima: ${item.climate}", style = TextStyle(color = Color.White))
+                        Text(text = "Población: ${item.population}", style = TextStyle(color = Color.White))
+                        Text(text = "ID: ${item.id}", style = TextStyle(color = colorWars, fontSize = 20.sp))
+                    }
                 }
-
             }
-            }
-
-
         }
-    if(showDialog){
+    }
+
+    if (showDialog) {
         AlertDialog(
-            onDismissRequest = {showDialog = false},
-            title = {Text(text = "Eliminar Planeta")},
-            text = {Text(text = "Estas seguro de que quieres borrar a ${planetToDelete?.name} ")},
+            onDismissRequest = { showDialog = false },
+            title = { Text(text = "Eliminar Planeta") },
+            text = { Text(text = "¿Borrar ${planetToDelete?.name}?") },
             confirmButton = {
                 TextButton(onClick = {
                     planetToDelete?.let { viewModel.borrarPlaneta(it) }
                     showDialog = false
                     scope.launch {
-                        snackbarHostState.showSnackbar("Planeta eliminado")
+                        snackbarHostState.showSnackbar("Eliminado correctamente")
                     }
                 }) { Text("Eliminar") }
-            }, dismissButton = {
-                TextButton(onClick = {showDialog= false}) {
-                    Text(text="Cancelar",color =colorWars)
+            },
+            dismissButton = {
+                TextButton(onClick = { showDialog = false }) {
+                    Text(text = "Cancelar", color = colorWars)
                 }
             }
         )
     }
-        }
-
-
-
-@Preview(showBackground = true)
-@Composable
-fun ListPreview()
-{
-    //ListPlanets(modifier = Modifier)
 }
