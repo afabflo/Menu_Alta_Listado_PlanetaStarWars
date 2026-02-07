@@ -21,6 +21,11 @@ class PlanetRepositorio @Inject constructor(private val planetDAO: PlanetDAO) {
      * Al ser un Flow, cualquier cambio en la DB (insert/delete)
      * se notificará automáticamente a la UI.
      */
+
+
+    fun getPlanetByid(planet: Planet){
+        //return planetDAO.getPlanetbyId(planet.id)
+    }
     fun getDataFlow(): Flow<List<Planet>> = planetDAO.getAllFlow()
 
     // Operación de inserción
@@ -46,7 +51,7 @@ class PlanetRepositorio @Inject constructor(private val planetDAO: PlanetDAO) {
             BaseResult.Error(PlanetException.NotFound)
         }
     }
-
+//deben ser suspend todas aquellas que devuelvan un dato como devolver planet by id
     // Operación de borrado
     suspend fun delete(planet: Planet) {
         withContext(Dispatchers.IO) {

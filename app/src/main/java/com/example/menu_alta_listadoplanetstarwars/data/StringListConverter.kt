@@ -2,6 +2,7 @@
 package com.example.menu_alta_listadoplanetstarwars.data
 
 import androidx.room.TypeConverter
+import androidx.room.TypeConverters
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -18,4 +19,13 @@ class StringListConverter {
     fun fromList(list: List<String>): String {
         return Gson().toJson(list)
     }
+    //converter fromlocaldate y  localdate
+    //libreria de java no de jotlimn
+    /*@TypeConverters(Converters::class){
+        fun tolocalDate(dateString:String?):LocalDate?{
+
+        }
+    }*
+
+     */
 }

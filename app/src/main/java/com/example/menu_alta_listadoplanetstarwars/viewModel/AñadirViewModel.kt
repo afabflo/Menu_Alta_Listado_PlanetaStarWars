@@ -11,7 +11,6 @@ import com.example.menu_alta_listadoplanetstarwars.network.BaseResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
 @HiltViewModel
 class AñadirViewModel @Inject constructor(
     private val repositorio: PlanetRepositorio
@@ -30,14 +29,23 @@ class AñadirViewModel @Inject constructor(
 
     var errorMessage by mutableStateOf<String?>(null)
 
+    // NUEVO: Estado de éxito para que la UI reaccione
+    var isSuccess by mutableStateOf(false)
+        private set
+
     fun resetear() {
         name = ""; rotationPeriod = ""; orbitalPeriod = ""; diameter = ""
         climate = ""; gravity = ""; terrain = ""; surfaceWater = ""; population = ""
         errorMessage = null
+        isSuccess = false // También reseteamos el éxito
     }
 
+    fun resetSuccess() {
+        isSuccess = false
+    }
 
-    fun insertarPlaneta(onSuccess: () -> Unit) {
+    // CAMBIO: Ya no recibe el callback por parámetro
+    fun insertarPlaneta() {
         if (name.isBlank()) {
             errorMessage = "El nombre es obligatorio"
             return
@@ -45,30 +53,23 @@ class AñadirViewModel @Inject constructor(
 
         viewModelScope.launch {
             val planetaNuevo = Planet(
-                id = 0,
-                name = name,
-                rotation_period = rotationPeriod,
-                orbital_period = orbitalPeriod,
-                diameter = diameter,
-                climate = climate,
-                gravity = gravity,
-                terrain = terrain,
-                surface_water = surfaceWater,
-                population = population,
-                residents = emptyList(),
-                films = emptyList()
+                id = 0, name = name, rotation_period = rotationPeriod,
+                orbital_period = orbitalPeriod, diameter = diameter,
+                climate = climate, gravity = gravity, terrain = terrain,
+                surface_water = surfaceWater, population = population,
+                residents = emptyList(), films = emptyList()
             )
 
             val result = repositorio.add(planetaNuevo)
 
             when (result) {
                 is BaseResult.Sucess -> {
-                    resetear()
-                    onSuccess() // Navegamos atrás o mostramos mensaje
+                    // Primero marcamos el éxito, esto disparará el LaunchedEffect en la UI
+                    isSuccess = true
                 }
                 is BaseResult.Error -> {
-
                     errorMessage = "Error al guardar el planeta"
+                    isSuccess = false
                 }
             }
         }
