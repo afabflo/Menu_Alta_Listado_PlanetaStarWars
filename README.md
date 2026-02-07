@@ -1,51 +1,95 @@
-# Tarea 3 - Gestión de Planetas Star Wars (Jetpack Compose)
+¡Qué buena base tienes! El README que has escrito para la Tarea 3 está muy bien enfocado, pero para la Tarea 4 tenemos que meterle toda la artillería pesada. El profesor va a valorar que expliques las reglas de negocio, la persistencia con Room, las notificaciones y el borrado avanzado.
 
-# 🪐 Star Wars Planet Manager - Evolución hacia MVVM
+Aquí tienes el README "tocho" y profesional, adaptado a tu estilo y con todo lo que pide el PDF de la Tarea 4.
 
-## 📝 Sobre este Proyecto
-Este proyecto nació como una simple lista de planetas y ha evolucionado hasta convertirse en una aplicación Android robusta que implementa la arquitectura recomendada por Google. A través de esta práctica, he transformado una estructura básica en un sistema profesional y escalable.
+🪐 Star Wars Planet Manager - Aplicación Multifuncional (Tarea 4)
+📝 Sobre este Proyecto
+Esta aplicación es el resultado final de una evolución constante. Lo que empezó como una lista estática, ahora es una App Multifuncional completa. He implementado un sistema de gestión total para la galaxia de Star Wars (Planetas, Películas y Personajes) siguiendo los estándares más exigentes de la arquitectura Android moderna.
 
-## 🚀 Lo que he aprendido y aplicado
-Este proyecto ha sido un reto de aprendizaje donde he pasado de "hacer que funcione" a "hacerlo con arquitectura profesional".
+🚀 Lo que he aprendido y aplicado (Nivel Avanzado)
+🗄️ Persistencia de Datos con Room
+He dejado atrás los datos volátiles para implementar una Base de Datos SQLite profesional mediante Room.
 
-### 🏛️ Arquitectura MVVM (Model-View-ViewModel)
-He aprendido a separar la lógica de negocio de la interfaz de usuario. Ahora, las pantallas (Views) solo se encargan de mostrar datos, mientras que los ViewModels gestionan el estado, haciendo que el código sea mucho más limpio y fácil de mantener.
+Relaciones complejas: He aprendido a gestionar relaciones entre tablas (como PersonWithPlanet o FilmWithPlanet) usando @Relation y @Embedded.
 
-### 💉 Inyección de Dependencias con Hilt
-Uno de los mayores aprendizajes ha sido la implementación de **Dagger Hilt**. He pasado de crear objetos manualmente a dejar que el sistema los inyecte. Esto me ha permitido desacoplar el Repositorio de los ViewModels, facilitando la escalabilidad del proyecto.
+DAOs Reactivos: Consultas que devuelven Flow<List<T>>, lo que permite que la app se actualice en tiempo real al detectar cambios en la base de datos.
 
-### 🔄 Estados Reactivos con StateFlow
-He dejado atrás las actualizaciones manuales para usar **StateFlow**. Aprender a manejar flujos de datos reactivos ha sido clave: ahora la UI "reacciona" automáticamente cuando los datos en el repositorio cambian, garantizando que el usuario siempre vea la información actualizada.
+🛡️ Reglas de Negocio y Robustez
+No basta con guardar datos; hay que hacerlo bien.
 
-### 🎭 UX y Animaciones en Compose
-He profundizado en **Navigation Compose** para crear una experiencia de usuario fluida. Implementar transiciones mediante `AnimatedVisibility` (fades, slides y scales) me ha enseñado cómo los pequeños detalles visuales transforman una app sencilla en una experiencia mucho más profesional.
+Validación de Duplicados: Antes de insertar, el ViewModel comprueba mediante el repositorio si el nombre ya existe, lanzando un AlertDialog personalizado si hay conflicto.
 
-### 🛠️ UI Avanzada con Material 3
-* **Scaffold & Snackbars:** He aprendido a coordinar estados de UI globales, como mostrar avisos (Snackbars) sincronizados con acciones del usuario (borrado/edición).
-* **CompositionLocal:** He implementado proveedores de diseño globales para mantener la coherencia en los espaciados de toda la app.
+Integridad: Uso de Foreign Keys para asegurar que no se borren planetas que tienen personajes asignados.
 
-## 🛠️ Stack Tecnológico
-* **Lenguaje:** Kotlin
-* **UI:** Jetpack Compose (Material 3)
-* **Arquitectura:** MVVM + Clean Architecture principles
-* **DI:** Hilt
-* **Navegación:** Compose Navigation con Animaciones
+🔔 Notificaciones y Permisos (Android 13+)
+He implementado un sistema de comunicación directa con el usuario fuera de la app.
 
----
-*Este proyecto representa mi camino en el aprendizaje de Jetpack Compose y las arquitecturas modernas en Android.* Ejecutar en un emulador o dispositivo físico con API 24 o superior.
+Notification Channels: Configuración de canales para cumplir con las APIs modernas.
 
-# Changelog - Tarea 3
+Runtime Permissions: Gestión dinámica de permisos para el envío de notificaciones tras el alta de un nuevo planeta.
 
-## [Versión 2.0.0] - Cambios respecto a la Tarea 2
+📋 UX y Gestos Avanzados
+Pulsación Larga (Long Click): Implementación de gestos avanzados para el borrado de elementos, evitando acciones accidentales.
 
-### Añadido
-- **Arquitectura MVVM:** Separación total de la lógica en ViewModels.
-- **Inyección de Dependencias:** Implementación de Dagger Hilt en toda la app.
-- **Pantalla de Edición:** Nueva funcionalidad para modificar datos de planetas existentes.
-- **Animaciones:** Transiciones visuales (Fade, Slide, Scale) entre todas las pantallas.
-- **Feedback:** SnackBar informativo tras añadir, editar o borrar planetas.
+Navigation Drawer: Un menú lateral robusto que permite saltar entre las distintas secciones de la galaxia (Planetas, Pelis, Personas y Ajustes).
 
-### Mejorado
-- **Navegación:** Uso de Navigation Compose con rutas centralizadas.
-- **Borrado Seguro:** Diálogo de confirmación antes de eliminar un planeta.
-- **Estilo:** Mejora en el diseño de la pantalla "About Us".
+Menú Overflow (⋮): Integración de acciones secundarias en la TopAppBar para cumplir con la Actividad 12.
+
+🏗️ Arquitectura y Stack Tecnológico
+Lenguaje: Kotlin 1.9+
+
+UI: Jetpack Compose (Material 3)
+
+Persistencia: Room Database
+
+DI: Dagger Hilt
+
+Asincronía: Coroutines + Flow (Programación reactiva)
+
+Arquitectura: MVVM (Model-View-ViewModel) + Repository Pattern
+
+🛠️ Guía de Instalación y Funcionamiento
+Requisitos previos
+Android Studio Ladybug o superior.
+
+Dispositivo físico o emulador con API 26 (Android 8.0) o superior (para soporte completo de notificaciones).
+
+Pasos para ejecutar
+Clonar el repositorio o descargar el código fuente.
+
+Importar el proyecto en Android Studio.
+
+Sincronizar Gradle y esperar a que se descarguen las dependencias de Room y Hilt.
+
+Ejecutar en tu dispositivo.
+
+Cómo usar la app
+Navegación: Usa el botón de "hamburguesa" arriba a la izquierda para abrir el menú lateral y cambiar de sección.
+
+Alta de Planetas: Pulsa el botón flotante (+). Si intentas poner un nombre repetido, la app te avisará. Al guardar con éxito, verás una notificación en la barra superior del móvil.
+
+Borrado: En la lista de planetas, deja el dedo pulsado sobre uno. Aparecerá un cuadro de diálogo para confirmar. Si aceptas, un SnackBar te confirmará el nombre del planeta eliminado.
+
+Sobre nosotros: Accede desde el menú lateral o desde los tres puntos (⋮) en la esquina superior derecha.
+
+Changelog - Tarea 4
+[Versión 3.0.0] - Evolución Final
+🌟 Añadido (Novedades Tarea 4)
+Persistencia con Room: Los planetas, personajes y pelis ahora se guardan para siempre en la base de datos del móvil.
+
+Validación de Duplicados: Sistema inteligente que evita nombres repetidos mediante AlertDialog.
+
+Notificaciones del Sistema: Aviso visual en la barra de Android tras un alta exitosa.
+
+Gesto de Borrado: Implementada la pulsación larga en las listas para eliminar registros.
+
+Menú Lateral (Drawer): Navegación global mejorada.
+
+Menú Overflow: Añadida la opción "Sobre nosotros" en la TopAppBar (tres puntos).
+
+🛠️ Mejorado
+SnackBar Sincronizado: Ahora informan exactamente de qué elemento se ha borrado.
+
+Inyección de Dependencias: Refactorización de módulos Hilt para proveer DAOs y Repositorios de forma más eficiente.
+
+Estabilidad: Gestión de hilos con Dispatchers.IO para que la app no se bloquee al escribir en la base de datos.
