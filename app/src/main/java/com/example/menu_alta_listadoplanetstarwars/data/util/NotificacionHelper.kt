@@ -13,7 +13,7 @@ import kotlin.random.Random
 @RequiresApi(Build.VERSION_CODES.O)
 class NotificationHelper(private val context: Context) {
 
-    // 1. Declarar las variables que faltaban o daban error
+
     private val notificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -41,7 +41,7 @@ class NotificationHelper(private val context: Context) {
         val notification = NotificationCompat.Builder(context, notificationChannelID)
             .setContentTitle(contentTitle)
             .setContentText(contentText)
-            .setSmallIcon(R.drawable.ic_launcher) // Verifica que el icono existe
+            .setSmallIcon(R.drawable.ic_launcher)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .build()

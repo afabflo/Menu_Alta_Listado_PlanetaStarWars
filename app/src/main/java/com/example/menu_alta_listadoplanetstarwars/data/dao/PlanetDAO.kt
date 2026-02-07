@@ -18,6 +18,8 @@ interface PlanetDAO {
     @Delete
    suspend fun delete(planet: Planet)
 
+    @Query("SELECT * FROM dbPlanet WHERE name = :name LIMIT 1")
+    suspend fun getPlanetByName(name: String): Planet?
     @Query("SELECT * FROM dbPlanet")
     fun getAllFlow(): Flow<List<Planet>>
 

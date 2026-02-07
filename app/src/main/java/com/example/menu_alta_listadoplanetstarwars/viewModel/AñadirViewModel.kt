@@ -1,22 +1,27 @@
 package com.example.menu_alta_listadoplanetstarwars.viewModel
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.menu_alta_listadoplanetstarwars.data.repository.PlanetRepositorio
+import com.example.menu_alta_listadoplanetstarwars.data.util.NotificationHelper
 import com.example.menu_alta_listadoplanetstarwars.model.Planet
 import com.example.menu_alta_listadoplanetstarwars.network.BaseResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 @HiltViewModel
 class AñadirViewModel @Inject constructor(
-    private val repositorio: PlanetRepositorio
+    private val repositorio: PlanetRepositorio,
+    private val notificationHelper: NotificationHelper
 ) : ViewModel() {
 
-    // Estados del formulario
+
     var name by mutableStateOf("")
     var rotationPeriod by mutableStateOf("")
     var orbitalPeriod by mutableStateOf("")
@@ -29,7 +34,10 @@ class AñadirViewModel @Inject constructor(
 
     var errorMessage by mutableStateOf<String?>(null)
 
-    // NUEVO: Estado de éxito para que la UI reaccione
+
+    var showDuplicatedDialog by mutableStateOf(false)
+
+    // Estado de éxito
     var isSuccess by mutableStateOf(false)
         private set
 
@@ -37,39 +45,52 @@ class AñadirViewModel @Inject constructor(
         name = ""; rotationPeriod = ""; orbitalPeriod = ""; diameter = ""
         climate = ""; gravity = ""; terrain = ""; surfaceWater = ""; population = ""
         errorMessage = null
-        isSuccess = false // También reseteamos el éxito
+        isSuccess = false
+        showDuplicatedDialog = false
     }
 
     fun resetSuccess() {
         isSuccess = false
     }
 
-    // CAMBIO: Ya no recibe el callback por parámetro
+    @RequiresApi(Build.VERSION_CODES.O)
     fun insertarPlaneta() {
+
         if (name.isBlank()) {
             errorMessage = "El nombre es obligatorio"
             return
         }
 
         viewModelScope.launch {
-            val planetaNuevo = Planet(
-                id = 0, name = name, rotation_period = rotationPeriod,
-                orbital_period = orbitalPeriod, diameter = diameter,
-                climate = climate, gravity = gravity, terrain = terrain,
-                surface_water = surfaceWater, population = population,
-                residents = emptyList(), films = emptyList()
-            )
 
-            val result = repositorio.add(planetaNuevo)
+            val existe = repositorio.getPlanetByName(name)
 
-            when (result) {
-                is BaseResult.Sucess -> {
-                    // Primero marcamos el éxito, esto disparará el LaunchedEffect en la UI
-                    isSuccess = true
-                }
-                is BaseResult.Error -> {
-                    errorMessage = "Error al guardar el planeta"
-                    isSuccess = false
+            if (existe != null) {
+                showDuplicatedDialog = true
+            } else {
+                val planetaNuevo = Planet(
+                    id = 0, name = name, rotation_period = rotationPeriod,
+                    orbital_period = orbitalPeriod, diameter = diameter,
+                    climate = climate, gravity = gravity, terrain = terrain,
+                    surface_water = surfaceWater, population = population,
+                    residents = emptyList(), films = emptyList()
+                )
+
+                val result = repositorio.add(planetaNuevo)
+
+                when (result) {
+                    is BaseResult.Sucess -> {
+                        // Se lanza cuando la operación ha sido exitosa
+                        notificationHelper.showSimpleNotification(
+                            "Planeta Guardado",
+                            "Se ha registrado con éxito el planeta: $name"
+                        )
+                        isSuccess = true
+                    }
+                    is BaseResult.Error -> {
+                        errorMessage = "Error al guardar el planeta en la base de datos"
+                        isSuccess = false
+                    }
                 }
             }
         }

@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.compose.foundation)
     //implementation(libs.firebase.crashlytics.buildtools)
     // Aplicar el compilador kapt
     kapt(libs.androidx.room.compiler)

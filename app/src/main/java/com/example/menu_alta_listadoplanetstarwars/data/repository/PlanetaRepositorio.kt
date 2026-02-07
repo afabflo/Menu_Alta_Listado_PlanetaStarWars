@@ -16,11 +16,6 @@ class PlanetRepositorio @Inject constructor(private val planetDAO: PlanetDAO) {
     // Variable para guardar el planeta que el usuario pulsa en la lista
     var planetaSeleccionado: Planet? = null
 
-    /**
-     * Devuelve un Flow directamente desde la base de datos.
-     * Al ser un Flow, cualquier cambio en la DB (insert/delete)
-     * se notificará automáticamente a la UI.
-     */
 
 
     fun getPlanetByid(planet: Planet){
@@ -57,5 +52,8 @@ class PlanetRepositorio @Inject constructor(private val planetDAO: PlanetDAO) {
         withContext(Dispatchers.IO) {
             planetDAO.delete(planet)
         }
+    }
+    suspend fun getPlanetByName(name: String): Planet? {
+        return planetDAO.getPlanetByName(name)
     }
 }

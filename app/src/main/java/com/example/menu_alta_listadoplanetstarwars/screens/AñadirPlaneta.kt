@@ -37,27 +37,24 @@ import com.example.menu_alta_listadoplanetstarwars.ui.components.CampoTextoPlane
 import com.example.menu_alta_listadoplanetstarwars.ui.theme.colorWars
 import com.example.menu_alta_listadoplanetstarwars.viewModel.AñadirViewModel
 
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AñadirPlaneta(
     modifier: Modifier,
     navHostController: NavHostController,
     onUpdateTopBar: (BaseTopAppBarState) -> Unit,
-    onUpdateFab: (BaseFabState) -> Unit, // <--- Añadido el parámetro del FAB
+    onUpdateFab: (BaseFabState) -> Unit,
     viewModel: AñadirViewModel,
     onBack: () -> Unit
 ) {
     val context = LocalContext.current
-    val notificationHelper = remember { NotificationHelper(context) }
 
-    // 1. Configuramos el Launcher de permisos
+
+
     val requestNotificationPermissionThenNotify = rememberPermissionsLauncher(
         permissions = listOf(AppPermissions.Notifications),
         onAllGranted = {
-            notificationHelper.showSimpleNotification(
-                contentTitle = "Planeta creado",
-                contentText = "Se ha dado de alta el planeta: ${viewModel.name}"
-            )
             onBack()
             viewModel.resetSuccess()
         },
@@ -67,17 +64,30 @@ fun AñadirPlaneta(
         }
     )
 
-    // 2. Reacción al éxito de la inserción
+
     LaunchedEffect(viewModel.isSuccess) {
         if (viewModel.isSuccess) {
             requestNotificationPermissionThenNotify()
         }
     }
 
-    // 3. Configuración de TopBar y FAB
+    if (viewModel.showDuplicatedDialog) {
+        androidx.compose.material3.AlertDialog(
+            onDismissRequest = { viewModel.showDuplicatedDialog = false },
+            confirmButton = {
+                androidx.compose.material3.TextButton(
+                    onClick = { viewModel.showDuplicatedDialog = false }
+                ) {
+                    Text("Aceptar", color = colorWars)
+                }
+            },
+            title = { Text("Planeta Duplicado") },
+            text = { Text("El planeta '${viewModel.name}' ya existe en la base de datos. Por favor, elige otro nombre.") }
+        )
+    }
+
     val backIcon = painterResource(id = R.drawable.ic_launcher)
     LaunchedEffect(Unit) {
-        // Actualizamos la TopBar
         onUpdateTopBar(
             BaseTopAppBarState(
                 title = "Nuevo planeta",
@@ -87,21 +97,17 @@ fun AñadirPlaneta(
             )
         )
 
-        // Actualizamos el FAB (Aparece como botón de Guardar)
         onUpdateFab(
             BaseFabState(
-                icon = android.R.drawable.ic_menu_save, // Puedes usar tu propio icono R.drawable.ic_save
+                icon = android.R.drawable.ic_menu_save,
                 isVisible = true,
                 action = { viewModel.insertarPlaneta() }
             )
         )
     }
 
-    //  Limpieza del FAB al salir de esta pantalla
     DisposableEffect(Unit) {
         onDispose {
-            // Cuando el usuario sale de la pantalla, ocultamos el FAB
-            //onUpdateFab(BaseFabState(isVisible = false))
             onUpdateFab(BaseFabState(isVisible = true, icon = null))
         }
     }
@@ -116,8 +122,19 @@ fun AñadirPlaneta(
     ) {
         HeaderBox()
 
-        // Campos de formulario vinculados al ViewModel
+        // Campos de formulario
         CampoTextoPlaneta(viewModel.name, { viewModel.name = it }, "Nombre")
+
+        // Mostrar error de validaciomn
+        if (viewModel.errorMessage != null) {
+            Text(
+                text = viewModel.errorMessage!!,
+                color = Color.Red,
+                fontSize = 12.sp,
+                modifier = Modifier.padding(start = 4.dp)
+            )
+        }
+
         CampoTextoPlaneta(viewModel.rotationPeriod, { viewModel.rotationPeriod = it }, "Periodo de rotación")
         CampoTextoPlaneta(viewModel.orbitalPeriod, { viewModel.orbitalPeriod = it }, "Periodo orbital")
         CampoTextoPlaneta(viewModel.diameter, { viewModel.diameter = it }, "Diámetro")
@@ -138,7 +155,6 @@ fun AñadirPlaneta(
         }
     }
 }
-
 @Composable
 fun HeaderBox() {
     Box(

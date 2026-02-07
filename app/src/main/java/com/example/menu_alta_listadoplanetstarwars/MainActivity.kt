@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -121,7 +122,52 @@ class MainActivity : ComponentActivity() {
                         Scaffold(
                             modifier = Modifier.fillMaxSize(),
                             topBar = {
-                                BaseTopAppBar(state = topBarState)
+                                // ACTIVIDAD 12: Inclusión de la TopAppBar con Menú Overflow
+                                CenterAlignedTopAppBar(
+                                    title = { Text(topBarState.title) },
+                                    navigationIcon = {
+                                        IconButton(onClick = { topBarState.upAction() }) {
+                                            topBarState.iconUpAction?.let {
+                                                Icon(
+                                                    painter = it,
+                                                    contentDescription = "Menu/Back",
+                                                    tint = colorWars
+                                                )
+                                            }
+                                        }
+                                    },
+                                    actions = {
+                                        // Variable local para controlar la visibilidad del menú desplegable
+                                        var mExpanded by remember { mutableStateOf(false) }
+
+                                        // Icono de tres puntos (Actividad 12)
+                                        IconButton(onClick = { mExpanded = true }) {
+                                            Icon(
+                                                imageVector = Icons.Default.MoreVert,
+                                                contentDescription = "Opciones",
+                                                tint = colorWars
+                                            )
+                                        }
+
+                                        // El menú desplegable (Overflow)
+                                        DropdownMenu(
+                                            expanded = mExpanded,
+                                            onDismissRequest = { mExpanded = false }
+                                        ) {
+                                            DropdownMenuItem(
+                                                text = { Text("Sobre nosotros") },
+                                                onClick = {
+                                                    mExpanded = false
+                                                    navController.navigate(Routes.ABOUT)
+                                                }
+                                            )
+                                        }
+                                    },
+                                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                                        containerColor = Color.Black,
+                                        titleContentColor = colorWars
+                                    )
+                                )
                             },
                             snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
                             // 3. FAB DINÁMICO: Ahora reacciona al fabState
@@ -155,7 +201,12 @@ class MainActivity : ComponentActivity() {
                                                 if (newState.title == "Planetas Star Wars") {
                                                     scope.launch { drawerState.open() }
                                                 } else {
-                                                    newState.upAction()
+                                                    // Si no es el home, volvemos atrás
+                                                    if (navController.previousBackStackEntry != null) {
+                                                        navController.popBackStack()
+                                                    } else {
+                                                        scope.launch { drawerState.open() }
+                                                    }
                                                 }
                                             }
                                         )

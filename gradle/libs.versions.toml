@@ -16,6 +16,7 @@ room="2.7.1"
 firebaseCrashlyticsBuildtools = "3.0.6"
 runtime = "1.10.1"
 material3 = "1.4.0"
+foundation = "1.10.2"
 
 
 [libraries]
@@ -45,6 +46,7 @@ firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "fireb
 androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

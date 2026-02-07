@@ -44,7 +44,6 @@ import com.example.menu_alta_listadoplanetstarwars.model.Planet
 import com.example.menu_alta_listadoplanetstarwars.ui.theme.colorWars
 import com.example.menu_alta_listadoplanetstarwars.viewModel.ListadoViewModel
 import kotlinx.coroutines.launch
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ListPlanets(
@@ -59,6 +58,7 @@ fun ListPlanets(
     var planetToDelete by remember { mutableStateOf<Planet?>(null) }
     val scope = rememberCoroutineScope()
     val menuIcon = painterResource(id = com.example.menu_alta_listadoplanetstarwars.R.drawable.ic_launcher)
+
     LaunchedEffect(Unit) {
         onUpdateTopBar(
             BaseTopAppBarState(
@@ -69,15 +69,15 @@ fun ListPlanets(
                         name = "Añadir",
                         icon = Icons.Default.Add,
                         contentDescription = "Añadir Planeta",
-                        onClick = {navController.navigate(Routes.ADD)},
+                        onClick = { navController.navigate(Routes.ADD) },
                         isVisible = true
                     ),
                     Action.ActionImageVector(
                         name = "Sobre nosotros",
                         icon = Icons.Default.Info,
                         contentDescription = "Informacion",
-                        onClick = {navController.navigate(Routes.ABOUT)},
-                        isVisible = false
+                        onClick = { navController.navigate(Routes.ABOUT) },
+                        isVisible = true
                     )
                 )
             )
@@ -98,6 +98,7 @@ fun ListPlanets(
                             navController.navigate(Routes.EDIT)
                         },
                         onLongClick = {
+                            // Si deja el dedo pegado, guardamos el planeta y saltamos el aviso
                             planetToDelete = item
                             showDialog = true
                         }
@@ -133,20 +134,25 @@ fun ListPlanets(
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
-            title = { Text(text = "Eliminar Planeta") },
-            text = { Text(text = "¿Borrar ${planetToDelete?.name}?") },
+            title = { Text(text = "¡Cuidado!") },
+            // El PDF dice que hay que poner el nombre del bicho que vas a borrar
+            text = { Text(text = "¿Seguro que quieres borrar el planeta ${planetToDelete?.name}?") },
             confirmButton = {
                 TextButton(onClick = {
+                    val nombreBorrado = planetToDelete?.name ?: ""
                     planetToDelete?.let { viewModel.borrarPlaneta(it) }
                     showDialog = false
+
                     scope.launch {
-                        snackbarHostState.showSnackbar("Eliminado correctamente")
+                        snackbarHostState.showSnackbar("El planeta $nombreBorrado se ha ido al garete")
                     }
-                }) { Text("Eliminar") }
+                }) {
+                    Text("Borrar", color = Color.Red)
+                }
             },
             dismissButton = {
                 TextButton(onClick = { showDialog = false }) {
-                    Text(text = "Cancelar", color = colorWars)
+                    Text(text = "Mejor no", color = colorWars)
                 }
             }
         )
