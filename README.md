@@ -1,7 +1,3 @@
-¡Qué buena base tienes! El README que has escrito para la Tarea 3 está muy bien enfocado, pero para la Tarea 4 tenemos que meterle toda la artillería pesada. El profesor va a valorar que expliques las reglas de negocio, la persistencia con Room, las notificaciones y el borrado avanzado.
-
-Aquí tienes el README "tocho" y profesional, adaptado a tu estilo y con todo lo que pide el PDF de la Tarea 4.
-
 🪐 Star Wars Planet Manager - Aplicación Multifuncional (Tarea 4)
 📝 Sobre este Proyecto
 Esta aplicación es el resultado final de una evolución constante. Lo que empezó como una lista estática, ahora es una App Multifuncional completa. He implementado un sistema de gestión total para la galaxia de Star Wars (Planetas, Películas y Personajes) siguiendo los estándares más exigentes de la arquitectura Android moderna.
@@ -67,15 +63,21 @@ Cómo usar la app
 Navegación: Usa el botón de "hamburguesa" arriba a la izquierda para abrir el menú lateral y cambiar de sección.
 
 Alta de Planetas: Pulsa el botón flotante (+). Si intentas poner un nombre repetido, la app te avisará. Al guardar con éxito, verás una notificación en la barra superior del móvil.
+<img width="290" height="547" alt="image" src="https://github.com/user-attachments/assets/2ec90814-9e8f-4786-84ab-ef161bfe769e" />
 
 Borrado: En la lista de planetas, deja el dedo pulsado sobre uno. Aparecerá un cuadro de diálogo para confirmar. Si aceptas, un SnackBar te confirmará el nombre del planeta eliminado.
+<img width="286" height="580" alt="image" src="https://github.com/user-attachments/assets/50a6550f-b9ee-4996-8b44-6628f43d94cf" />
+<img width="549" height="145" alt="image" src="https://github.com/user-attachments/assets/116a1c5c-55e9-4fed-8378-df9fe2cdbe67" />
+
 
 Sobre nosotros: Accede desde el menú lateral o desde los tres puntos (⋮) en la esquina superior derecha.
+<img width="274" height="505" alt="image" src="https://github.com/user-attachments/assets/ed33acf5-5f0d-4bec-bac9-b043123c4ce0" />
 
 Changelog - Tarea 4
 [Versión 3.0.0] - Evolución Final
 🌟 Añadido (Novedades Tarea 4)
 Persistencia con Room: Los planetas, personajes y pelis ahora se guardan para siempre en la base de datos del móvil.
+<img width="280" height="331" alt="image" src="https://github.com/user-attachments/assets/eab6cef0-f6fd-4645-bff9-56aad981859d" />
 
 Validación de Duplicados: Sistema inteligente que evita nombres repetidos mediante AlertDialog.
 
