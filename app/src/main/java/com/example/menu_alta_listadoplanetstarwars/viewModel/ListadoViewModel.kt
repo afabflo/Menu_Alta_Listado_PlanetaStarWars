@@ -34,6 +34,8 @@ class ListadoViewModel @Inject constructor(
             planetRepositorio.delete(planet)
         }
     }
+    val planets = planetDAO.getOrderByASC()
+
 
     // --- PERSONAJES ---
     val personajes: Flow<List<Person>> = personDao.getAll()

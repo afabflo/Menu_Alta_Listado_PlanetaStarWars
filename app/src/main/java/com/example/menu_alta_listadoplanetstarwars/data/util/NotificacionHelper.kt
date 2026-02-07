@@ -8,11 +8,15 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.example.menu_alta_listadoplanetstarwars.R
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.random.Random
 
-@RequiresApi(Build.VERSION_CODES.O)
-class NotificationHelper(private val context: Context) {
-
+@Singleton
+class NotificationHelper @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
 
     private val notificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -20,7 +24,9 @@ class NotificationHelper(private val context: Context) {
     private val notificationChannelID = "planet_channel_id"
 
     init {
-        createNotificationChannel()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createNotificationChannel()
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -35,7 +41,6 @@ class NotificationHelper(private val context: Context) {
         notificationManager.createNotificationChannel(channel)
     }
 
-    // 2. Añadir esta anotación para quitar el error rojo de .notify()
     @SuppressLint("MissingPermission")
     fun showSimpleNotification(contentTitle: String, contentText: String) {
         val notification = NotificationCompat.Builder(context, notificationChannelID)

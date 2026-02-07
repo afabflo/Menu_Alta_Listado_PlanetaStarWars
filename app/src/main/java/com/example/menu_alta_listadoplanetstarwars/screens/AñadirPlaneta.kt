@@ -9,9 +9,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -24,9 +22,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.menu_alta_listadoplanetstarwars.R
 import com.example.menu_alta_listadoplanetstarwars.data.model.BaseTopAppBarState
 import com.example.menu_alta_listadoplanetstarwars.data.model.BaseFabState // Asegúrate de importar tu modelo
@@ -34,9 +34,9 @@ import com.example.menu_alta_listadoplanetstarwars.data.permission.AppPermission
 import com.example.menu_alta_listadoplanetstarwars.data.util.NotificationHelper
 import com.example.menu_alta_listadoplanetstarwars.helper.rememberPermissionsLauncher
 import com.example.menu_alta_listadoplanetstarwars.ui.components.CampoTextoPlaneta
+import com.example.menu_alta_listadoplanetstarwars.ui.theme.Menu_Alta_ListadoPlanetStarWarsTheme
 import com.example.menu_alta_listadoplanetstarwars.ui.theme.colorWars
 import com.example.menu_alta_listadoplanetstarwars.viewModel.AñadirViewModel
-
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -50,8 +50,6 @@ fun AñadirPlaneta(
 ) {
     val context = LocalContext.current
 
-
-
     val requestNotificationPermissionThenNotify = rememberPermissionsLauncher(
         permissions = listOf(AppPermissions.Notifications),
         onAllGranted = {
@@ -64,7 +62,6 @@ fun AñadirPlaneta(
         }
     )
 
-
     LaunchedEffect(viewModel.isSuccess) {
         if (viewModel.isSuccess) {
             requestNotificationPermissionThenNotify()
@@ -72,10 +69,10 @@ fun AñadirPlaneta(
     }
 
     if (viewModel.showDuplicatedDialog) {
-        androidx.compose.material3.AlertDialog(
+        AlertDialog(
             onDismissRequest = { viewModel.showDuplicatedDialog = false },
             confirmButton = {
-                androidx.compose.material3.TextButton(
+               TextButton(
                     onClick = { viewModel.showDuplicatedDialog = false }
                 ) {
                     Text("Aceptar", color = colorWars)
@@ -155,6 +152,7 @@ fun AñadirPlaneta(
         }
     }
 }
+
 @Composable
 fun HeaderBox() {
     Box(
@@ -185,6 +183,28 @@ fun HeaderBox() {
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.align(Alignment.Center)
             )
+        }
+    }
+}
+
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview(showBackground = true, name = "Modo Claro")
+@Composable
+fun AñadirPlanetaPreviewLight() {
+    Menu_Alta_ListadoPlanetStarWarsTheme(darkTheme = false) {
+        Surface(color = MaterialTheme.colorScheme.background) {
+
+        }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, name = "Modo Oscuro")
+@Composable
+fun AñadirPlanetaPreviewDark() {
+    Menu_Alta_ListadoPlanetStarWarsTheme(darkTheme = true) {
+        Surface(color = MaterialTheme.colorScheme.background) {
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.example.menu_alta_listadoplanetstarwars.home
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -10,14 +12,18 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.example.menu_alta_listadoplanetstarwars.data.model.BaseTopAppBarState
-import com.example.menu_alta_listadoplanetstarwars.data.model.BaseFabState // Asegúrate de que esta ruta sea correcta
+import com.example.menu_alta_listadoplanetstarwars.data.model.BaseFabState
 import com.example.menu_alta_listadoplanetstarwars.screens.AboutUsScreen
 import com.example.menu_alta_listadoplanetstarwars.screens.AñadirPlaneta
 import com.example.menu_alta_listadoplanetstarwars.screens.EditarPlaneta
+import com.example.menu_alta_listadoplanetstarwars.screens.ListFilms
+import com.example.menu_alta_listadoplanetstarwars.screens.ListPeople
 import com.example.menu_alta_listadoplanetstarwars.screens.ListPlanets
 import com.example.menu_alta_listadoplanetstarwars.viewModel.AñadirViewModel
 import com.example.menu_alta_listadoplanetstarwars.viewModel.EditarViewModel
+import com.example.menu_alta_listadoplanetstarwars.viewModel.FilmViewModel
 import com.example.menu_alta_listadoplanetstarwars.viewModel.ListadoViewModel
+import com.example.menu_alta_listadoplanetstarwars.viewModel.PersonViewModel
 
 object Routes {
     const val PLANETS_GRAPH = "planets_graph"
@@ -26,23 +32,21 @@ object Routes {
     const val ABOUT = "about"
     const val EDIT = "edit"
     const val FILMS = "films"
-    const val SPECIES = "species"
     const val PEOPLE = "people"
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavHostScreen(
     navHostController: NavHostController,
     snackbarHostState: SnackbarHostState,
     onUpdateTopBar: (BaseTopAppBarState) -> Unit,
-    onUpdateFab: (BaseFabState) -> Unit // <-- Añadido el canal del FAB
+    onUpdateFab: (BaseFabState) -> Unit
 ) {
     NavHost(
         navController = navHostController,
         startDestination = Routes.PLANETS_GRAPH
     ) {
-
-        // El grafo principal de planetas
         planetsGraph(
             navHostController = navHostController,
             snackbarHostState = snackbarHostState,
@@ -50,54 +54,40 @@ fun NavHostScreen(
             onUpdateFab = onUpdateFab
         )
 
-        // --- OTRAS SECCIONES (Usando el mismo ViewModel de listado por ahora) ---
         composable(Routes.FILMS) {
-            val viewModel: ListadoViewModel = hiltViewModel()
-            ListPlanets(
+            val viewModel: FilmViewModel = hiltViewModel()
+            ListFilms(
                 viewModel = viewModel,
                 navController = navHostController,
                 snackbarHostState = snackbarHostState,
-                onUpdateTopBar = onUpdateTopBar
+                onUpdateTopBar = onUpdateTopBar,
             )
         }
 
         composable(Routes.PEOPLE) {
-            val viewModel: ListadoViewModel = hiltViewModel()
-            ListPlanets(
+            val viewModel: PersonViewModel = hiltViewModel()
+            ListPeople(
                 viewModel = viewModel,
                 navController = navHostController,
                 snackbarHostState = snackbarHostState,
-                onUpdateTopBar = onUpdateTopBar
             )
         }
 
-        composable(Routes.SPECIES) {
-            val viewModel: ListadoViewModel = hiltViewModel()
-            ListPlanets(
-                viewModel = viewModel,
-                navController = navHostController,
-                snackbarHostState = snackbarHostState,
-                onUpdateTopBar = onUpdateTopBar
-            )
-        }
-
-        // --- ABOUT ---
         composable(Routes.ABOUT) {
             AboutUsScreen(
-                modifier = Modifier,
-                onUpdateTopBar = onUpdateTopBar,
-                navController = navHostController
+                navController = navHostController,
+                onUpdateTopBar = onUpdateTopBar
             )
         }
     }
 }
 
-// Grafo específico para la lógica de Planetas (Listado, Alta y Edición)
+@RequiresApi(Build.VERSION_CODES.O)
 fun NavGraphBuilder.planetsGraph(
     navHostController: NavHostController,
     snackbarHostState: SnackbarHostState,
     onUpdateTopBar: (BaseTopAppBarState) -> Unit,
-    onUpdateFab: (BaseFabState) -> Unit // <-- Recibimos el canal aquí también
+    onUpdateFab: (BaseFabState) -> Unit
 ) {
     navigation(
         startDestination = Routes.LIST,
@@ -109,19 +99,20 @@ fun NavGraphBuilder.planetsGraph(
                 viewModel = viewModel,
                 navController = navHostController,
                 snackbarHostState = snackbarHostState,
-                onUpdateTopBar = onUpdateTopBar
+                onUpdateTopBar = onUpdateTopBar,
+                onUpdateFab = onUpdateFab
             )
         }
 
         composable(Routes.ADD) {
             val viewModel: AñadirViewModel = hiltViewModel()
             AñadirPlaneta(
-                viewModel = viewModel,
-                onBack = { navHostController.popBackStack() },
                 modifier = Modifier,
                 navHostController = navHostController,
                 onUpdateTopBar = onUpdateTopBar,
-                onUpdateFab = onUpdateFab // <-- Conexión final con la pantalla de Alta
+                onUpdateFab = onUpdateFab,
+                viewModel = viewModel,
+                onBack = { navHostController.popBackStack() }
             )
         }
 
@@ -132,7 +123,6 @@ fun NavGraphBuilder.planetsGraph(
                 navController = navHostController,
                 snackbarHostState = snackbarHostState,
                 onUpdateTopBar = onUpdateTopBar
-                // Si quieres que Editar tenga FAB, añádele el parámetro onUpdateFab aquí
             )
         }
     }

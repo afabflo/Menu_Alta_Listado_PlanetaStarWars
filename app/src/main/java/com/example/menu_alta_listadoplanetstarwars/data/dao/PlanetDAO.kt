@@ -22,6 +22,8 @@ interface PlanetDAO {
     suspend fun getPlanetByName(name: String): Planet?
     @Query("SELECT * FROM dbPlanet")
     fun getAllFlow(): Flow<List<Planet>>
+    @Query("SELECT * FROM dbPlanet ORDER BY name ASC")
+    fun getOrderByASC(): Flow<List<Planet>>
 
 
     @Update

@@ -41,6 +41,33 @@ class AñadirViewModel @Inject constructor(
     var isSuccess by mutableStateOf(false)
         private set
 
+    private fun validarTodo(): Boolean {
+        if (name.isBlank()) {
+            errorMessage = "El nombre no puede estar vacío"
+            return false
+        }
+        if (climate.isBlank()) {
+            errorMessage = "El clima es obligatorio"
+            return false
+        }
+        if (terrain.isBlank()) {
+            errorMessage = "El terreno es obligatorio"
+            return false
+        }
+        // Validación de tipos numéricos
+        if (diameter.isNotBlank() && diameter.toIntOrNull() == null) {
+            errorMessage = "El diámetro debe ser un número"
+            return false
+        }
+        if (population.isNotBlank() && population.toLongOrNull() == null) {
+            errorMessage = "La población debe ser un número válido"
+            return false
+        }
+
+        errorMessage = null
+        return true
+    }
+
     fun resetear() {
         name = ""; rotationPeriod = ""; orbitalPeriod = ""; diameter = ""
         climate = ""; gravity = ""; terrain = ""; surfaceWater = ""; population = ""
@@ -56,10 +83,8 @@ class AñadirViewModel @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.O)
     fun insertarPlaneta() {
 
-        if (name.isBlank()) {
-            errorMessage = "El nombre es obligatorio"
-            return
-        }
+        // Añadida la llamada a la validación de 5 campos
+        if (!validarTodo()) return
 
         viewModelScope.launch {
 

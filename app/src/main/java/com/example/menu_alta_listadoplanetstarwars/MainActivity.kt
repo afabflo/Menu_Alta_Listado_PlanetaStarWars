@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -19,9 +20,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.menu_alta_listadoplanetstarwars.data.model.BaseTopAppBar
 import com.example.menu_alta_listadoplanetstarwars.data.model.BaseTopAppBarState
-import com.example.menu_alta_listadoplanetstarwars.data.model.BaseFabState // IMPORTANTE: Asegúrate de tener este import
+import com.example.menu_alta_listadoplanetstarwars.data.model.BaseFabState
 import com.example.menu_alta_listadoplanetstarwars.home.NavHostScreen
 import com.example.menu_alta_listadoplanetstarwars.home.Routes
 import com.example.menu_alta_listadoplanetstarwars.ui.locals.LocalPlanetPadding
@@ -41,45 +41,37 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
                 val scope = rememberCoroutineScope()
-
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
-
-                val menuIcon = painterResource(id = R.drawable.ic_launcher)
                 val snackbarHostState = remember { SnackbarHostState() }
 
-                // 1. ESTADO PARA LA TOPBAR
                 var topBarState by remember { mutableStateOf(BaseTopAppBarState(
                     title = "Planetas Star Wars",
-                    iconUpAction = menuIcon,
+                    iconUpAction = null,
                     upAction = { scope.launch { drawerState.open() } },
                     actions = emptyList()
                 )) }
 
-                // 2. NUEVO: ESTADO PARA EL FAB (Botón Flotante)
-                // Por defecto lo iniciamos invisible o con la acción de ir a "Añadir"
                 var fabState by remember { mutableStateOf(BaseFabState(
-                    icon = null, // Se puede usar un icono por defecto si quieres
+                    icon = null,
                     isVisible = false,
                     action = { navController.navigate(Routes.ADD) }
                 )) }
+
+                androidx.activity.compose.BackHandler(enabled = drawerState.isOpen) {
+                    scope.launch { drawerState.close() }
+                }
 
                 CompositionLocalProvider(LocalPlanetPadding provides 16.dp) {
                     ModalNavigationDrawer(
                         drawerState = drawerState,
                         drawerContent = {
                             ModalDrawerSheet(modifier = Modifier.width(300.dp)) {
-                                Text(
-                                    text = "Menú Star Wars",
-                                    modifier = Modifier.padding(16.dp),
-                                    style = MaterialTheme.typography.titleLarge
-                                )
-
+                                Text(text = "Menú Galáctico", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleLarge)
                                 HorizontalDivider()
-
                                 NavigationDrawerItem(
-                                    label = { Text("Listado Planetas") },
-                                    selected =  currentRoute?.startsWith("list") == true || currentRoute == Routes.PLANETS_GRAPH,
+                                    label = { Text("Planetas") },
+                                    selected = currentRoute == Routes.LIST || currentRoute == Routes.PLANETS_GRAPH,
                                     onClick = {
                                         navController.navigate(Routes.PLANETS_GRAPH) {
                                             popUpTo(navController.graph.startDestinationId) { saveState = true }
@@ -89,30 +81,27 @@ class MainActivity : ComponentActivity() {
                                         scope.launch { drawerState.close() }
                                     }
                                 )
-
                                 NavigationDrawerItem(
-                                    label = { Text("Listado Películas") },
+                                    label = { Text("Películas") },
                                     selected = currentRoute == Routes.FILMS,
                                     onClick = {
-                                        navController.navigate(Routes.FILMS) { popUpTo(Routes.LIST) }
+                                        navController.navigate(Routes.FILMS)
                                         scope.launch { drawerState.close() }
                                     }
                                 )
-
                                 NavigationDrawerItem(
-                                    label = { Text("Listado Personajes") },
+                                    label = { Text("Personajes") },
                                     selected = currentRoute == Routes.PEOPLE,
                                     onClick = {
-                                        navController.navigate(Routes.PEOPLE) { popUpTo(Routes.LIST) }
+                                        navController.navigate(Routes.PEOPLE)
                                         scope.launch { drawerState.close() }
                                     }
                                 )
-
                                 NavigationDrawerItem(
-                                    label = { Text("Acerca de") },
+                                    label = { Text("Sobre nosotros") },
                                     selected = currentRoute == Routes.ABOUT,
                                     onClick = {
-                                        navController.navigate(Routes.ABOUT) { popUpTo(Routes.LIST) }
+                                        navController.navigate(Routes.ABOUT)
                                         scope.launch { drawerState.close() }
                                     }
                                 )
@@ -122,38 +111,23 @@ class MainActivity : ComponentActivity() {
                         Scaffold(
                             modifier = Modifier.fillMaxSize(),
                             topBar = {
-                                // ACTIVIDAD 12: Inclusión de la TopAppBar con Menú Overflow
                                 CenterAlignedTopAppBar(
                                     title = { Text(topBarState.title) },
                                     navigationIcon = {
                                         IconButton(onClick = { topBarState.upAction() }) {
-                                            topBarState.iconUpAction?.let {
-                                                Icon(
-                                                    painter = it,
-                                                    contentDescription = "Menu/Back",
-                                                    tint = colorWars
-                                                )
+                                            if (topBarState.title == "Planetas Star Wars" || currentRoute == Routes.LIST) {
+                                                Icon(imageVector = Icons.Default.Menu, contentDescription = null, tint = Color.White)
+                                            } else {
+                                                Icon(painter = painterResource(id = android.R.drawable.ic_menu_revert), contentDescription = null, tint = colorWars)
                                             }
                                         }
                                     },
                                     actions = {
-                                        // Variable local para controlar la visibilidad del menú desplegable
                                         var mExpanded by remember { mutableStateOf(false) }
-
-                                        // Icono de tres puntos (Actividad 12)
                                         IconButton(onClick = { mExpanded = true }) {
-                                            Icon(
-                                                imageVector = Icons.Default.MoreVert,
-                                                contentDescription = "Opciones",
-                                                tint = colorWars
-                                            )
+                                            Icon(imageVector = Icons.Default.MoreVert, contentDescription = null, tint = colorWars)
                                         }
-
-                                        // El menú desplegable (Overflow)
-                                        DropdownMenu(
-                                            expanded = mExpanded,
-                                            onDismissRequest = { mExpanded = false }
-                                        ) {
+                                        DropdownMenu(expanded = mExpanded, onDismissRequest = { mExpanded = false }) {
                                             DropdownMenuItem(
                                                 text = { Text("Sobre nosotros") },
                                                 onClick = {
@@ -163,57 +137,34 @@ class MainActivity : ComponentActivity() {
                                             )
                                         }
                                     },
-                                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                                        containerColor = Color.Black,
-                                        titleContentColor = colorWars
-                                    )
+                                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Black, titleContentColor = colorWars)
                                 )
                             },
                             snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-                            // 3. FAB DINÁMICO: Ahora reacciona al fabState
                             floatingActionButton = {
                                 if (fabState.isVisible) {
-                                    FloatingActionButton(
-                                        onClick = { fabState.action() },
-                                        containerColor = colorWars,
-                                        contentColor = Color.Black
-                                    ) {
-                                        // Si el estado tiene un icono (Int), lo dibujamos
-                                        fabState.icon?.let { iconRes ->
-                                            Icon(
-                                                painter = painterResource(id = iconRes),
-                                                contentDescription = "Acción FAB"
-                                            )
-                                        } ?: Icon(imageVector = Icons.Default.Add, contentDescription = "Añadir")
+                                    FloatingActionButton(onClick = { fabState.action() }, containerColor = colorWars, contentColor = Color.Black) {
+                                        Icon(imageVector = Icons.Default.Add, contentDescription = null)
                                     }
                                 }
                             }
                         ) { innerPadding ->
                             Box(modifier = Modifier.padding(innerPadding)) {
-                                // 4. PASAMOS AMBOS UPDATERS AL NAVHOST
                                 NavHostScreen(
                                     navHostController = navController,
                                     snackbarHostState = snackbarHostState,
                                     onUpdateTopBar = { newState ->
-                                        // Mantenemos la lógica de que el botón de arriba abra el drawer
                                         topBarState = newState.copy(
                                             upAction = {
-                                                if (newState.title == "Planetas Star Wars") {
+                                                if (navController.previousBackStackEntry == null || currentRoute == Routes.LIST) {
                                                     scope.launch { drawerState.open() }
                                                 } else {
-                                                    // Si no es el home, volvemos atrás
-                                                    if (navController.previousBackStackEntry != null) {
-                                                        navController.popBackStack()
-                                                    } else {
-                                                        scope.launch { drawerState.open() }
-                                                    }
+                                                    navController.popBackStack()
                                                 }
                                             }
                                         )
                                     },
-                                    onUpdateFab = { nuevoFabState ->
-                                        fabState = nuevoFabState
-                                    }
+                                    onUpdateFab = { nuevoFabState -> fabState = nuevoFabState }
                                 )
                             }
                         }
