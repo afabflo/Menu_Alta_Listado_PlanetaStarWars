@@ -1,5 +1,8 @@
 package com.example.menu_alta_listadoplanetstarwars.viewModel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.menu_alta_listadoplanetstarwars.data.dao.FilmDAO
@@ -22,8 +25,15 @@ class ListadoViewModel @Inject constructor(
     private val filmDAO: FilmDAO
 ) : ViewModel() {
 
-    // --- PLANETAS ---
-    val planetas: Flow<List<Planet>> = planetRepositorio.getDataFlow()
+    var planetSearch by mutableStateOf("")
+    var personSearch by mutableStateOf("")
+
+    val planetas: Flow<List<Planet>>
+        get() = if (planetSearch.isBlank()) {
+            planetRepositorio.getDataFlow()
+        } else {
+            planetRepositorio.searchPlanets(planetSearch)
+        }
 
     fun selecionarPlaneta(planet: Planet) {
         planetRepositorio.planetaSeleccionado = planet
@@ -34,11 +44,13 @@ class ListadoViewModel @Inject constructor(
             planetRepositorio.delete(planet)
         }
     }
-    val planets = planetDAO.getOrderByASC()
 
-
-    // --- PERSONAJES ---
-    val personajes: Flow<List<Person>> = personDao.getAll()
+    val personajes: Flow<List<Person>>
+        get() = if (personSearch.isBlank()) {
+            personDao.getAll()
+        } else {
+            personDao.searchPeople(personSearch)
+        }
 
     fun borrarPersonaje(person: Person) {
         viewModelScope.launch {
@@ -46,7 +58,6 @@ class ListadoViewModel @Inject constructor(
         }
     }
 
-    // --- PELÍCULAS ---
     val peliculas: Flow<List<Film>> = filmDAO.getAll()
 
     fun borrarPelicula(film: Film) {

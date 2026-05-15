@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.kapt)
     alias(libs.plugins.kotlin.parcelize)
-    alias(libs.plugins.room)
+    //alias(libs.plugins.room)
     // Habilita el plugin
 
 }
@@ -43,9 +43,7 @@ android {
     buildFeatures {
         compose = true
     }
-    room {
-        schemaDirectory("$projectDir/schemas")
-    }
+
 
 }
 

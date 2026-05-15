@@ -1,7 +1,7 @@
 package com.example.menu_alta_listadoplanetstarwars.data.repository
 
-import com.example.menu_alta_listadoplanetstarwars.model.Planet
 import com.example.menu_alta_listadoplanetstarwars.data.dao.PlanetDAO
+import com.example.menu_alta_listadoplanetstarwars.model.Planet
 import com.example.menu_alta_listadoplanetstarwars.model.PlanetException
 import com.example.menu_alta_listadoplanetstarwars.network.BaseResult
 import kotlinx.coroutines.Dispatchers
@@ -11,49 +11,54 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class PlanetRepositorio @Inject constructor(private val planetDAO: PlanetDAO) {
+class PlanetRepositorio @Inject constructor(
+    private val planetDAO: PlanetDAO
+) {
 
-    // Variable para guardar el planeta que el usuario pulsa en la lista
     var planetaSeleccionado: Planet? = null
 
-
-
-    fun getPlanetByid(planet: Planet){
-        //return planetDAO.getPlanetbyId(planet.id)
-    }
     fun getDataFlow(): Flow<List<Planet>> = planetDAO.getAllFlow()
 
-    // Operación de inserción
+    fun getPlanetsOrderAsc(): Flow<List<Planet>> = planetDAO.getOrderByASC()
+
+    fun getPlanetsOrderDesc(): Flow<List<Planet>> = planetDAO.getOrderByDESC()
+
+    fun searchPlanets(search: String): Flow<List<Planet>> = planetDAO.searchPlanets(search)
+
     suspend fun add(planet: Planet): BaseResult<Planet> {
         return withContext(Dispatchers.IO) {
-            if (!planetDAO.exists(planet.id)) {
+            val exists = planetDAO.existsByName(planet.name)
+
+            if (exists) {
+                BaseResult.Error(PlanetException.Exists)
+            } else {
                 planetDAO.insert(planet)
                 BaseResult.Sucess(planet)
-            } else {
-                BaseResult.Error(PlanetException.Exists)
             }
         }
     }
 
-
-    // Operación de actualización
     suspend fun update(updatePlanet: Planet): BaseResult<Planet> {
+        return withContext(Dispatchers.IO) {
+            val rowsAffected = planetDAO.update(updatePlanet)
 
-        val rowsAffected = planetDAO.update(updatePlanet)
-        return if (rowsAffected > 0) {
-            BaseResult.Sucess(updatePlanet)
-        } else {
-            BaseResult.Error(PlanetException.NotFound)
+            if (rowsAffected > 0) {
+                BaseResult.Sucess(updatePlanet)
+            } else {
+                BaseResult.Error(PlanetException.NotFound)
+            }
         }
     }
-//deben ser suspend todas aquellas que devuelvan un dato como devolver planet by id
-    // Operación de borrado
+
     suspend fun delete(planet: Planet) {
         withContext(Dispatchers.IO) {
             planetDAO.delete(planet)
         }
     }
+
     suspend fun getPlanetByName(name: String): Planet? {
-        return planetDAO.getPlanetByName(name)
+        return withContext(Dispatchers.IO) {
+            planetDAO.getPlanetByName(name)
+        }
     }
 }
