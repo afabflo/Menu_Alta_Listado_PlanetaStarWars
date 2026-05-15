@@ -1,97 +1,94 @@
-🪐 Star Wars Planet Manager - Aplicación Multifuncional (Tarea 4)
-📝 Sobre este Proyecto
-Esta aplicación es el resultado final de una evolución constante. Lo que empezó como una lista estática, ahora es una App Multifuncional completa. He implementado un sistema de gestión total para la galaxia de Star Wars (Planetas, Películas y Personajes) siguiendo los estándares más exigentes de la arquitectura Android moderna.
+# Star Wars Planet Manager - Aplicación Multifuncional (Tareas 2, 3 y 4)
 
-🚀 Lo que he aprendido y aplicado (Nivel Avanzado)
-🗄️ Persistencia de Datos con Room
-He dejado atrás los datos volátiles para implementar una Base de Datos SQLite profesional mediante Room.
+## Sobre este Proyecto
+Esta aplicación representa la evolución completa del proyecto académico Star Wars. Lo que comenzó como una interfaz básica terminó convirtiéndose en una aplicación Android multifuncional, visualmente cuidada y estructurada bajo una arquitectura moderna, diseñada para gestionar distintas entidades del universo Star Wars.
 
-Relaciones complejas: He aprendido a gestionar relaciones entre tablas (como PersonWithPlanet o FilmWithPlanet) usando @Relation y @Embedded.
+El proyecto implementa la gestión completa de:
 
-DAOs Reactivos: Consultas que devuelven Flow<List<T>>, lo que permite que la app se actualice en tiempo real al detectar cambios en la base de datos.
+- Planetas  
+- Personajes  
+- Películas  
 
-🛡️ Reglas de Negocio y Robustez
-No basta con guardar datos; hay que hacerlo bien.
+### Relación principal trabajada (Requisito obligatorio)
+**Planeta → contiene → Personajes**
 
-Validación de Duplicados: Antes de insertar, el ViewModel comprueba mediante el repositorio si el nombre ya existe, lanzando un AlertDialog personalizado si hay conflicto.
+Esto permite cumplir con el enfoque Maestro-Detalle exigido en las tareas, desarrollando dos entidades relacionadas de forma funcional y coherente.
 
-Integridad: Uso de Foreign Keys para asegurar que no se borren planetas que tienen personajes asignados.
+Además, la aplicación incorpora una sección adicional de películas como ampliación funcional para enriquecer la experiencia general.
 
-🔔 Notificaciones y Permisos (Android 13+)
-He implementado un sistema de comunicación directa con el usuario fuera de la app.
+---
 
-Notification Channels: Configuración de canales para cumplir con las APIs modernas.
+# Evolución del Proyecto (De Tarea 2 a Tarea 4)
 
-Runtime Permissions: Gestión dinámica de permisos para el envío de notificaciones tras el alta de un nuevo planeta.
+## Tarea 2 — Diseño de Interfaces
+En esta fase se desarrollaron:
 
-📋 UX y Gestos Avanzados
-Pulsación Larga (Long Click): Implementación de gestos avanzados para el borrado de elementos, evitando acciones accidentales.
+- Listados visuales
+- Formularios de alta
+- Primer diseño con Jetpack Compose
+- Material 3
+- Navegación visual inicial
+- Estética inspirada en Star Wars
 
-Navigation Drawer: Un menú lateral robusto que permite saltar entre las distintas secciones de la galaxia (Planetas, Pelis, Personas y Ajustes).
+---
 
-Menú Overflow (⋮): Integración de acciones secundarias en la TopAppBar para cumplir con la Actividad 12.
+## Tarea 3 — Arquitectura Android Moderna
+El proyecto evolucionó hacia una estructura más profesional mediante:
 
-🏗️ Arquitectura y Stack Tecnológico
-Lenguaje: Kotlin 1.9+
+- MVVM
+- Hilt (inyección de dependencias)
+- Navigation Compose
+- StateFlow / Flow
+- Repository Pattern
+- Separación real de capas
 
-UI: Jetpack Compose (Material 3)
+---
 
-Persistencia: Room Database
+## Tarea 4 — Aplicación Funcional Completa
+La aplicación alcanza un nivel avanzado mediante:
 
-DI: Dagger Hilt
+- CRUD completo
+- Persistencia real con Room
+- Validaciones
+- Control de duplicados
+- Notificaciones
+- Gestión de permisos
+- Pulsación larga
+- AlertDialogs
+- SnackBars
+- Drawer Navigation
+- Overflow Menu
 
-Asincronía: Coroutines + Flow (Programación reactiva)
+---
 
-Arquitectura: MVVM (Model-View-ViewModel) + Repository Pattern
+# Stack Tecnológico y Arquitectura
 
-🛠️ Guía de Instalación y Funcionamiento
-Requisitos previos
-Android Studio Ladybug o superior.
+## Lenguaje:
+- Kotlin 1.9+
 
-Dispositivo físico o emulador con API 26 (Android 8.0) o superior (para soporte completo de notificaciones).
+## UI:
+- Jetpack Compose
+- Material 3
 
-Pasos para ejecutar
-Clonar el repositorio o descargar el código fuente.
+## Persistencia:
+- Room Database (SQLite)
 
-Importar el proyecto en Android Studio.
+## Inyección de Dependencias:
+- Dagger Hilt
 
-Sincronizar Gradle y esperar a que se descarguen las dependencias de Room y Hilt.
+## Asincronía:
+- Coroutines
+- Flow / StateFlow
 
-Ejecutar en tu dispositivo.
+## Arquitectura:
+- MVVM
+- Repository Pattern
 
-Cómo usar la app
-Navegación: Usa el botón de "hamburguesa" arriba a la izquierda para abrir el menú lateral y cambiar de sección.
+---
 
-Alta de Planetas: Pulsa el botón flotante (+). Si intentas poner un nombre repetido, la app te avisará. Al guardar con éxito, verás una notificación en la barra superior del móvil.
-<img width="290" height="547" alt="image" src="https://github.com/user-attachments/assets/2ec90814-9e8f-4786-84ab-ef161bfe769e" />
+# Base de Datos (Nivel Avanzado)
+La aplicación utiliza Room Database para almacenar permanentemente toda la información.
 
-Borrado: En la lista de planetas, deja el dedo pulsado sobre uno. Aparecerá un cuadro de diálogo para confirmar. Si aceptas, un SnackBar te confirmará el nombre del planeta eliminado.
-<img width="286" height="580" alt="image" src="https://github.com/user-attachments/assets/50a6550f-b9ee-4996-8b44-6628f43d94cf" />
-<img width="549" height="145" alt="image" src="https://github.com/user-attachments/assets/116a1c5c-55e9-4fed-8378-df9fe2cdbe67" />
-
-
-Sobre nosotros: Accede desde el menú lateral o desde los tres puntos (⋮) en la esquina superior derecha.
-<img width="274" height="505" alt="image" src="https://github.com/user-attachments/assets/ed33acf5-5f0d-4bec-bac9-b043123c4ce0" />
-
-Changelog - Tarea 4
-[Versión 3.0.0] - Evolución Final
-🌟 Añadido (Novedades Tarea 4)
-Persistencia con Room: Los planetas, personajes y pelis ahora se guardan para siempre en la base de datos del móvil.
-<img width="280" height="331" alt="image" src="https://github.com/user-attachments/assets/eab6cef0-f6fd-4645-bff9-56aad981859d" />
-
-Validación de Duplicados: Sistema inteligente que evita nombres repetidos mediante AlertDialog.
-
-Notificaciones del Sistema: Aviso visual en la barra de Android tras un alta exitosa.
-
-Gesto de Borrado: Implementada la pulsación larga en las listas para eliminar registros.
-
-Menú Lateral (Drawer): Navegación global mejorada.
-
-Menú Overflow: Añadida la opción "Sobre nosotros" en la TopAppBar (tres puntos).
-
-🛠️ Mejorado
-SnackBar Sincronizado: Ahora informan exactamente de qué elemento se ha borrado.
-
-Inyección de Dependencias: Refactorización de módulos Hilt para proveer DAOs y Repositorios de forma más eficiente.
-
-Estabilidad: Gestión de hilos con Dispatchers.IO para que la app no se bloquee al escribir en la base de datos.
+## Base de datos:
+```kotlin
+star_wars_db_v5
